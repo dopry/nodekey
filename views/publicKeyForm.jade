@@ -1,5 +1,55 @@
-h1 Account Settings
+h1 Key Generation Form
+
+script(src="/js/forge/aes.js", type="text/javascript")
+script(src="/js/forge/prng.js", type="text/javascript")
+script(src="/js/forge/sha1.js", type="text/javascript")
+script(src="/js/forge/util.js", type="text/javascript")
+script(src="/js/forge/random.js", type="text/javascript")
+script(src="/js/forge/jsbn.js", type="text/javascript")
+script(src="/js/forge/asn1.js", type="text/javascript")
+script(src="/js/forge/oids.js", type="text/javascript")
+script(src="/js/forge/rsa.js", type="text/javascript")
+script(src="/js/forge/pki.js", type="text/javascript")
+
+
+
+
+
+        
+        
+
+script(type='text/javascript')
+   $(document).ready(function() {
+                $("input[name=Generate]").click(function() {
+                  var keypair = forge.pki.rsa.generateKeyPair(1024, 13);
+                  $("textarea[name=privateKey]").val(forge.pki.privateKeyToPem(keypair.privateKey));
+                  $("textarea[name=publicKey]").val(forge.pki.publicKeyToPem(keypair.publicKey));
+                });
+                
+                // There is definitely an argument for localstorage of private key. Even if it
+                // cannot cross http to https. It's a good place to trap the key so it can
+                // be recalled.
+                $("input[name=SavePrivateLocal]").click(function() {
+                  localStorage.setItem("privateKey", $("textarea[name=privateKey]").val())
+                });
+                 
+                $("input[name=SavePrivateDataURI]").click(function() {
+                  var uriContent = "data:application/octet-stream;filename=private.pem,"
+                                    + encodeURIComponent( $("textarea[name=privateKey]").val())
+                  window.location = uriContent;                  
+                });
+                 
+            });
+
 form#generatekey(method="post")
+    input(type="button", value="Generate Key Pair", name="Generate")
+    input(type="button", value="Save Private Key", name="SavePrivateLocal")
+    input(type="button", value="Download Private Key", name="SavePrivateDataURI")
+    input(type="button", value="Submit CSR", name="SubmitCSR")
+    input(type="button", value="Check CSR", name="CheckCSR")
+
+    label(for="privateKey") Private Key
+    textarea(name="privateKey", rows=15, cols=80)
     label(for="publicKey") Public Key
-        input(type="textbox", name="publicKey")
-    input(type="submit", value="Generate Key", name="generatePublicKey")
+    textarea(name="publicKey", rows=6, cols=80)
+    
